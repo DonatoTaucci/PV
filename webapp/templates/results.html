@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<p><a href="/">← nuova analisi</a> · sorgente: {{ source }}</p>
+<div class="card">
+  <strong>Istante di riferimento:</strong> {{ r.reference_time }} (ultimo istante diurno) ·
+  <strong>orizzonte:</strong> {{ r.horizon_minutes }} min · <strong>k impianto:</strong> {{ r.k_plant }} kW per kW/m²
+  {% if r.k_note %}<br><span class="muted">{{ r.k_note }}</span>{% endif %}
+</div>
+
+{% if r.plant_alerts %}
+<h2>Avvisi a livello d'impianto</h2>
+{% for a in r.plant_alerts %}
+<div class="card"><strong>{{ a.title }}</strong> ({{ a.slots }} slot anomali)
+  <ul>{% for x in a.actions %}<li>{{ x }}</li>{% endfor %}</ul></div>
+{% endfor %}
+{% endif %}
+
+<h2>Inverter ordinati per rischio</h2>
+<div class="card table-wrap">
+<table>
+  <thead><tr><th>Inverter</th><th>Stato attuale</th><th class="num">r_peer</th><th>Previsione</th><th>Rischio guasto</th><th>Storico (slot diurni anomali)</th></tr></thead>
+  <tbody>
+  {% for i in r.inverters %}
+  <tr>
+    <td><code>{{ i.inverter }}</code></td>
+    <td><span class="badge s-{{ i.state_now }}">{{ i.state_now }}</span></td>
+    <td class="num">{{ i.r_peer if i.r_peer is not none else '–' }}</td>
+    <td><span class="badge s-{{ i.prediction }}">{{ i.prediction }}</span></td>
+    <td><div class="bar" title="{{ (i.risk_fault*100)|round(1) }} %"><span style="width: {{ (i.risk_fault*100)|round(1) }}%"></span></div>
+        <span class="muted">{{ (i.risk_fault*100)|round(1) }} %</span></td>
+    <td class="muted">sotto {{ i.history_slots.SOTTOPRESTAZIONE }} · fermo {{ i.history_slots.INVERTER_FERMO }} · comm {{ i.history_slots.PERDITA_COMUNICAZIONE }}</td>
+  </tr>
+  {% if i.recommendation %}
+  <tr><td></td><td colspan="5">
+    <details><summary>{{ i.recommendation.title }}: cause e azioni consigliate</summary>
+      <p><strong>Cause probabili:</strong> {{ i.recommendation.causes|join('; ') }}</p>
+      <ul>{% for x in i.recommendation.actions %}<li>{{ x }}</li>{% endfor %}</ul>
+    </details></td></tr>
+  {% endif %}
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2>Pulizia dei dati caricati</h2>
+<div class="card table-wrap"><table>
+  {% for k, v in r.cleaning.items() %}<tr><td>{{ k }}</td><td class="num">{{ v }}</td></tr>{% endfor %}
+</table></div>
+<p class="muted">Modello {{ r.model_version }}. Le probabilità provengono da un modello addestrato su due soli impianti:
+vanno interpretate come indicazione di priorità, non come certezza.</p>
+{% endblock %}

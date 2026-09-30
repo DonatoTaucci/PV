@@ -1,0 +1,120 @@
+{
+  "name": "Plant_2",
+  "raw_rows_generation": 67698,
+  "raw_rows_weather": 3259,
+  "n_inverters": 22,
+  "negative_power_values": 0,
+  "explicit_nan_generation": 0,
+  "explicit_nan_weather": 0,
+  "off_grid_timestamps_generation": 0,
+  "off_grid_timestamps_weather": 0,
+  "duplicates_generation": 0,
+  "duplicates_weather": 0,
+  "median_ac_dc_ratio_raw": 0.9784321243823051,
+  "dc_scale_factor_applied": 1.0,
+  "grid_slots": 3264,
+  "days": 34,
+  "slots_missing_generation_all_inverters": 5,
+  "slots_missing_weather": 5,
+  "slots_generation_without_weather": 0,
+  "slots_weather_without_generation": 0,
+  "weather_gap_runs": [
+    {
+      "start": "2020-05-15 23:15:00",
+      "end": "2020-05-15 23:15:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-05-19 16:00:00",
+      "end": "2020-05-19 16:00:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-05-29 16:00:00",
+      "end": "2020-05-29 16:00:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-06-01 17:45:00",
+      "end": "2020-06-01 17:45:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-06-03 14:00:00",
+      "end": "2020-06-03 14:00:00",
+      "slots": 1
+    }
+  ],
+  "generation_gap_runs": [
+    {
+      "start": "2020-05-15 23:15:00",
+      "end": "2020-05-15 23:15:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-05-19 16:00:00",
+      "end": "2020-05-19 16:00:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-05-29 16:00:00",
+      "end": "2020-05-29 16:00:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-06-01 17:45:00",
+      "end": "2020-06-01 17:45:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-06-03 14:00:00",
+      "end": "2020-06-03 14:00:00",
+      "slots": 1
+    }
+  ],
+  "weather_slots_imputed_short_gap": 5,
+  "weather_slots_imputed_night": 0,
+  "weather_slots_left_missing": 0,
+  "night_slots_per_day": 44,
+  "clock_lag_best_slots": 0,
+  "clock_lag_correlations": {
+    "-4": 0.8217,
+    "-3": 0.846,
+    "-2": 0.8659,
+    "-1": 0.8881,
+    "0": 0.9117,
+    "1": 0.889,
+    "2": 0.8726,
+    "3": 0.856,
+    "4": 0.8354
+  },
+  "expected_generation_rows": 71808,
+  "generation_rows_missing": 4110,
+  "generation_rows_filled_night_zero": 1868,
+  "generation_rows_comm_loss_daylight": 2242,
+  "generation_rows_comm_loss_plant_wide": 88,
+  "ac_gt_dc_rows": 17,
+  "irradiation_gt_1_5": 0,
+  "daylight_rows_zero_dc": 3774,
+  "night_rows_positive_dc": 383,
+  "total_yield_decreases": 1161,
+  "total_yield_zero_values": 563,
+  "daily_yield_nonzero_at_midnight_frac": 0.6898395721925134,
+  "daily_yield_vs_ac_energy_ratio": 0.9941376522935985,
+  "k_plant_kW_per_kWm2": 1583.4,
+  "plant_diagnostics": {
+    "thermal_model": {
+      "a_degC_per_kWm2": 25.67,
+      "b_degC": -1.27
+    },
+    "thermal_anomaly_slots": 25,
+    "thermal_anomaly_last": "2020-06-05 13:30:00",
+    "irradiance_sensor_suspect_slots": 57
+  },
+  "label_distribution_daylight_slots": {
+    "NORMALE": 24828,
+    "SOTTOPRESTAZIONE": 370,
+    "INVERTER_FERMO": 3620,
+    "PERDITA_COMUNICAZIONE": 2242
+  }
+}

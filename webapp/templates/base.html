@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PV Fault Beta</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body><main>
+  <h1><a href="/" style="color:inherit;text-decoration:none">PV Fault — previsione guasti fotovoltaici</a></h1>
+  <p class="muted">Versione beta per tesi sperimentale · modelli addestrati sui dati Kaggle di 2 impianti indiani (maggio–giugno 2020)</p>
+  {% block content %}{% endblock %}
+</main></body>
+</html>

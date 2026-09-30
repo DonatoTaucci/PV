@@ -1,0 +1,714 @@
+{
+  "twin": {
+    "P1_temporale": {
+      "lightgbm_normal_rows": {
+        "nRMSE_%": 8.51,
+        "MAE": 0.0233,
+        "R2": 0.9668,
+        "n": 9148
+      },
+      "physical_normal_rows": {
+        "nRMSE_%": 8.76,
+        "MAE": 0.0255,
+        "R2": 0.9649,
+        "n": 9148
+      },
+      "lightgbm_all_daylight_rows": {
+        "nRMSE_%": 11.28,
+        "MAE": 0.0248,
+        "R2": 0.9427,
+        "n": 9174
+      }
+    },
+    "P2_temporale": {
+      "lightgbm_normal_rows": {
+        "nRMSE_%": 28.41,
+        "MAE": 0.0495,
+        "R2": 0.7072,
+        "n": 8090
+      },
+      "physical_normal_rows": {
+        "nRMSE_%": 28.12,
+        "MAE": 0.0491,
+        "R2": 0.7132,
+        "n": 8090
+      },
+      "lightgbm_all_daylight_rows": {
+        "nRMSE_%": 68.58,
+        "MAE": 0.1032,
+        "R2": -0.1274,
+        "n": 8998
+      }
+    },
+    "P1_to_P2_cross": {
+      "lightgbm_normal_rows": {
+        "nRMSE_%": 25.07,
+        "MAE": 0.0433,
+        "R2": 0.7691,
+        "n": 24828
+      },
+      "physical_normal_rows": {
+        "nRMSE_%": 25.42,
+        "MAE": 0.0472,
+        "R2": 0.7627,
+        "n": 24828
+      },
+      "lightgbm_all_daylight_rows": {
+        "nRMSE_%": 73.4,
+        "MAE": 0.1241,
+        "R2": -0.1799,
+        "n": 28818
+      }
+    },
+    "P2_to_P1_cross": {
+      "lightgbm_normal_rows": {
+        "nRMSE_%": 16.31,
+        "MAE": 0.0454,
+        "R2": 0.879,
+        "n": 30653
+      },
+      "physical_normal_rows": {
+        "nRMSE_%": 11.9,
+        "MAE": 0.0387,
+        "R2": 0.9356,
+        "n": 30653
+      },
+      "lightgbm_all_daylight_rows": {
+        "nRMSE_%": 17.51,
+        "MAE": 0.0465,
+        "R2": 0.8621,
+        "n": 30722
+      }
+    }
+  },
+  "forecast": {
+    "P1_temporale": {
+      "hybrid_all": {
+        "macro_F1": 0.6714,
+        "MCC": 0.498,
+        "balanced_accuracy": 0.8271,
+        "accuracy": 0.9893,
+        "n": 8998,
+        "per_class": {
+          "NORMALE": {
+            "precision": 0.997,
+            "recall": 0.992,
+            "F1": 0.995,
+            "support": 8929
+          },
+          "SOTTOPRESTAZIONE": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "F1": 0.0,
+            "support": 0
+          },
+          "INVERTER_FERMO": {
+            "precision": 0.885,
+            "recall": 0.489,
+            "F1": 0.63,
+            "support": 47
+          },
+          "PERDITA_COMUNICAZIONE": {
+            "precision": 0.242,
+            "recall": 1.0,
+            "F1": 0.389,
+            "support": 22
+          }
+        },
+        "confusion_matrix": [
+          [
+            8857,
+            0,
+            3,
+            69
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            24,
+            0,
+            23,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            22
+          ]
+        ],
+        "AP_any_fault": 0.4346,
+        "prevalence_any_fault": 0.0077
+      },
+      "persistence_all": {
+        "macro_F1": 0.7647,
+        "MCC": 0.6457,
+        "balanced_accuracy": 0.8289,
+        "accuracy": 0.9946,
+        "n": 8998,
+        "per_class": {
+          "NORMALE": {
+            "precision": 0.997,
+            "recall": 0.997,
+            "F1": 0.997,
+            "support": 8929
+          },
+          "SOTTOPRESTAZIONE": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "F1": 0.0,
+            "support": 0
+          },
+          "INVERTER_FERMO": {
+            "precision": 0.885,
+            "recall": 0.489,
+            "F1": 0.63,
+            "support": 47
+          },
+          "PERDITA_COMUNICAZIONE": {
+            "precision": 0.5,
+            "recall": 1.0,
+            "F1": 0.667,
+            "support": 22
+          }
+        },
+        "confusion_matrix": [
+          [
+            8904,
+            0,
+            3,
+            22
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            24,
+            0,
+            23,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            22
+          ]
+        ]
+      },
+      "skill_macroF1_vs_persistence": -0.3965,
+      "skill_MCC_vs_persistence": -0.4169,
+      "onset_any": {
+        "n": 8897,
+        "n_positive": 24,
+        "prevalence": 0.0027,
+        "AP": 0.0062,
+        "lift_AP_over_prevalence": 2.31,
+        "precision": 0.0,
+        "recall": 0.0,
+        "MCC": -0.0038
+      },
+      "onset_electrical": {
+        "n": 8897,
+        "n_positive": 24,
+        "prevalence": 0.0027,
+        "AP": 0.1019,
+        "lift_AP_over_prevalence": 37.78,
+        "precision": 0.0,
+        "recall": 0.0,
+        "MCC": 0.0
+      },
+      "n_train": 21841,
+      "n_test": 8998,
+      "train_target_distribution": {
+        "NORMALE": 20381,
+        "SOTTOPRESTAZIONE": 30,
+        "INVERTER_FERMO": 87,
+        "PERDITA_COMUNICAZIONE": 1343
+      }
+    },
+    "P2_temporale": {
+      "hybrid_all": {
+        "macro_F1": 0.4528,
+        "MCC": 0.6127,
+        "balanced_accuracy": 0.6591,
+        "accuracy": 0.8865,
+        "n": 8778,
+        "per_class": {
+          "NORMALE": {
+            "precision": 0.934,
+            "recall": 0.931,
+            "F1": 0.932,
+            "support": 7254
+          },
+          "SOTTOPRESTAZIONE": {
+            "precision": 0.108,
+            "recall": 0.364,
+            "F1": 0.167,
+            "support": 33
+          },
+          "INVERTER_FERMO": {
+            "precision": 0.744,
+            "recall": 0.683,
+            "F1": 0.712,
+            "support": 1491
+          },
+          "PERDITA_COMUNICAZIONE": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "F1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion_matrix": [
+          [
+            6752,
+            91,
+            345,
+            66
+          ],
+          [
+            16,
+            12,
+            5,
+            0
+          ],
+          [
+            464,
+            8,
+            1018,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "AP_any_fault": 0.7337,
+        "prevalence_any_fault": 0.1736
+      },
+      "persistence_all": {
+        "macro_F1": 0.6932,
+        "MCC": 0.6577,
+        "balanced_accuracy": 0.6312,
+        "accuracy": 0.9103,
+        "n": 8778,
+        "per_class": {
+          "NORMALE": {
+            "precision": 0.911,
+            "recall": 0.989,
+            "F1": 0.948,
+            "support": 7254
+          },
+          "SOTTOPRESTAZIONE": {
+            "precision": 0.6,
+            "recall": 0.364,
+            "F1": 0.453,
+            "support": 33
+          },
+          "INVERTER_FERMO": {
+            "precision": 0.909,
+            "recall": 0.541,
+            "F1": 0.678,
+            "support": 1491
+          },
+          "PERDITA_COMUNICAZIONE": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "F1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion_matrix": [
+          [
+            7172,
+            5,
+            77,
+            0
+          ],
+          [
+            17,
+            12,
+            4,
+            0
+          ],
+          [
+            681,
+            3,
+            807,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "skill_macroF1_vs_persistence": -0.7836,
+      "skill_MCC_vs_persistence": -0.1315,
+      "onset_any": {
+        "n": 7574,
+        "n_positive": 648,
+        "prevalence": 0.0856,
+        "AP": 0.2495,
+        "lift_AP_over_prevalence": 2.92,
+        "precision": 0.342,
+        "recall": 0.3256,
+        "MCC": 0.273
+      },
+      "onset_electrical": {
+        "n": 7574,
+        "n_positive": 648,
+        "prevalence": 0.0856,
+        "AP": 0.2809,
+        "lift_AP_over_prevalence": 3.28,
+        "precision": 0.3781,
+        "recall": 0.3256,
+        "MCC": 0.295
+      },
+      "n_train": 21512,
+      "n_test": 8778,
+      "train_target_distribution": {
+        "NORMALE": 14187,
+        "SOTTOPRESTAZIONE": 392,
+        "INVERTER_FERMO": 4425,
+        "PERDITA_COMUNICAZIONE": 2508
+      }
+    },
+    "P1_to_P2_cross": {
+      "hybrid_all": {
+        "macro_F1": 0.7887,
+        "MCC": 0.7305,
+        "balanced_accuracy": 0.7437,
+        "accuracy": 0.8828,
+        "n": 30290,
+        "per_class": {
+          "NORMALE": {
+            "precision": 0.874,
+            "recall": 0.982,
+            "F1": 0.925,
+            "support": 21441
+          },
+          "SOTTOPRESTAZIONE": {
+            "precision": 0.683,
+            "recall": 0.588,
+            "F1": 0.632,
+            "support": 425
+          },
+          "INVERTER_FERMO": {
+            "precision": 0.905,
+            "recall": 0.563,
+            "F1": 0.694,
+            "support": 5916
+          },
+          "PERDITA_COMUNICAZIONE": {
+            "precision": 0.975,
+            "recall": 0.842,
+            "F1": 0.904,
+            "support": 2508
+          }
+        },
+        "confusion_matrix": [
+          [
+            21050,
+            24,
+            316,
+            51
+          ],
+          [
+            158,
+            250,
+            16,
+            1
+          ],
+          [
+            2499,
+            86,
+            3329,
+            2
+          ],
+          [
+            374,
+            6,
+            16,
+            2112
+          ]
+        ],
+        "AP_any_fault": 0.7762,
+        "prevalence_any_fault": 0.2921
+      },
+      "persistence_all": {
+        "macro_F1": 0.7886,
+        "MCC": 0.7317,
+        "balanced_accuracy": 0.7431,
+        "accuracy": 0.8832,
+        "n": 30290,
+        "per_class": {
+          "NORMALE": {
+            "precision": 0.873,
+            "recall": 0.983,
+            "F1": 0.925,
+            "support": 21441
+          },
+          "SOTTOPRESTAZIONE": {
+            "precision": 0.683,
+            "recall": 0.588,
+            "F1": 0.632,
+            "support": 425
+          },
+          "INVERTER_FERMO": {
+            "precision": 0.914,
+            "recall": 0.559,
+            "F1": 0.694,
+            "support": 5916
+          },
+          "PERDITA_COMUNICAZIONE": {
+            "precision": 0.975,
+            "recall": 0.842,
+            "F1": 0.904,
+            "support": 2508
+          }
+        },
+        "confusion_matrix": [
+          [
+            21084,
+            24,
+            282,
+            51
+          ],
+          [
+            160,
+            250,
+            14,
+            1
+          ],
+          [
+            2522,
+            86,
+            3306,
+            2
+          ],
+          [
+            376,
+            6,
+            14,
+            2112
+          ]
+        ]
+      },
+      "skill_macroF1_vs_persistence": 0.0005,
+      "skill_MCC_vs_persistence": -0.0045,
+      "onset_any": {
+        "n": 22880,
+        "n_positive": 2834,
+        "prevalence": 0.1239,
+        "AP": 0.1513,
+        "lift_AP_over_prevalence": 1.22,
+        "precision": 0.5556,
+        "recall": 0.0071,
+        "MCC": 0.052
+      },
+      "onset_electrical": {
+        "n": 22880,
+        "n_positive": 2500,
+        "prevalence": 0.1093,
+        "AP": 0.2505,
+        "lift_AP_over_prevalence": 2.29,
+        "precision": 0.5556,
+        "recall": 0.008,
+        "MCC": 0.0568
+      },
+      "n_train": 30839,
+      "n_test": 30290,
+      "train_target_distribution": {
+        "NORMALE": 29310,
+        "SOTTOPRESTAZIONE": 30,
+        "INVERTER_FERMO": 134,
+        "PERDITA_COMUNICAZIONE": 1365
+      }
+    },
+    "P2_to_P1_cross": {
+      "hybrid_all": {
+        "macro_F1": 0.5309,
+        "MCC": 0.5151,
+        "balanced_accuracy": 0.524,
+        "accuracy": 0.9587,
+        "n": 30839,
+        "per_class": {
+          "NORMALE": {
+            "precision": 0.972,
+            "recall": 0.985,
+            "F1": 0.978,
+            "support": 29310
+          },
+          "SOTTOPRESTAZIONE": {
+            "precision": 0.667,
+            "recall": 0.2,
+            "F1": 0.308,
+            "support": 30
+          },
+          "INVERTER_FERMO": {
+            "precision": 0.17,
+            "recall": 0.44,
+            "F1": 0.245,
+            "support": 134
+          },
+          "PERDITA_COMUNICAZIONE": {
+            "precision": 0.798,
+            "recall": 0.471,
+            "F1": 0.592,
+            "support": 1365
+          }
+        },
+        "confusion_matrix": [
+          [
+            28857,
+            3,
+            287,
+            163
+          ],
+          [
+            24,
+            6,
+            0,
+            0
+          ],
+          [
+            75,
+            0,
+            59,
+            0
+          ],
+          [
+            721,
+            0,
+            1,
+            643
+          ]
+        ],
+        "AP_any_fault": 0.4231,
+        "prevalence_any_fault": 0.0496
+      },
+      "persistence_all": {
+        "macro_F1": 0.5996,
+        "MCC": 0.5911,
+        "balanced_accuracy": 0.5095,
+        "accuracy": 0.9674,
+        "n": 30839,
+        "per_class": {
+          "NORMALE": {
+            "precision": 0.972,
+            "recall": 0.994,
+            "F1": 0.983,
+            "support": 29310
+          },
+          "SOTTOPRESTAZIONE": {
+            "precision": 0.667,
+            "recall": 0.2,
+            "F1": 0.308,
+            "support": 30
+          },
+          "INVERTER_FERMO": {
+            "precision": 0.833,
+            "recall": 0.373,
+            "F1": 0.515,
+            "support": 134
+          },
+          "PERDITA_COMUNICAZIONE": {
+            "precision": 0.798,
+            "recall": 0.471,
+            "F1": 0.592,
+            "support": 1365
+          }
+        },
+        "confusion_matrix": [
+          [
+            29134,
+            3,
+            10,
+            163
+          ],
+          [
+            24,
+            6,
+            0,
+            0
+          ],
+          [
+            84,
+            0,
+            50,
+            0
+          ],
+          [
+            722,
+            0,
+            0,
+            643
+          ]
+        ]
+      },
+      "skill_macroF1_vs_persistence": -0.1716,
+      "skill_MCC_vs_persistence": -0.1859,
+      "onset_any": {
+        "n": 29668,
+        "n_positive": 826,
+        "prevalence": 0.0278,
+        "AP": 0.0282,
+        "lift_AP_over_prevalence": 1.01,
+        "precision": 0.0358,
+        "recall": 0.0121,
+        "MCC": 0.0047
+      },
+      "onset_electrical": {
+        "n": 29668,
+        "n_positive": 104,
+        "prevalence": 0.0035,
+        "AP": 0.0124,
+        "lift_AP_over_prevalence": 3.52,
+        "precision": 0.0323,
+        "recall": 0.0865,
+        "MCC": 0.0474
+      },
+      "n_train": 30290,
+      "n_test": 30839,
+      "train_target_distribution": {
+        "NORMALE": 21441,
+        "SOTTOPRESTAZIONE": 425,
+        "INVERTER_FERMO": 5916,
+        "PERDITA_COMUNICAZIONE": 2508
+      }
+    }
+  },
+  "config": {
+    "horizon_slots": 8,
+    "under_ratio": 0.8,
+    "trip_ratio": 0.02,
+    "train_fraction_temporal": 0.7
+  },
+  "feature_importance_gain_P1_to_P2": {
+    "SLOTS_SINCE_FAULT": 0.1475,
+    "DELTA_T": 0.1302,
+    "HOUR_SIN": 0.1275,
+    "IRR_DIFF_1H": 0.1234,
+    "IRRADIATION": 0.1187,
+    "R_PEER_STD_1H": 0.0588,
+    "R_PEER_MEAN_24H": 0.048,
+    "TWIN_RESID_MEAN_24H": 0.0455,
+    "N_COMM_24H": 0.037,
+    "HOUR_COS": 0.0365,
+    "TWIN_RESID_MEAN_1H": 0.0274,
+    "R_PEER_MEAN_2H": 0.0211
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "name": "Plant_1",
+  "raw_rows_generation": 68778,
+  "raw_rows_weather": 3182,
+  "n_inverters": 22,
+  "negative_power_values": 0,
+  "explicit_nan_generation": 0,
+  "explicit_nan_weather": 0,
+  "off_grid_timestamps_generation": 0,
+  "off_grid_timestamps_weather": 0,
+  "duplicates_generation": 0,
+  "duplicates_weather": 0,
+  "median_ac_dc_ratio_raw": 0.09784514721919302,
+  "dc_scale_factor_applied": 0.1,
+  "grid_slots": 3264,
+  "days": 34,
+  "slots_missing_generation_all_inverters": 106,
+  "slots_missing_weather": 82,
+  "slots_generation_without_weather": 1,
+  "slots_weather_without_generation": 25,
+  "weather_gap_runs": [
+    {
+      "start": "2020-05-15 23:15:00",
+      "end": "2020-05-16 01:45:00",
+      "slots": 11
+    },
+    {
+      "start": "2020-05-19 11:45:00",
+      "end": "2020-05-19 12:15:00",
+      "slots": 3
+    },
+    {
+      "start": "2020-05-20 13:30:00",
+      "end": "2020-05-20 17:15:00",
+      "slots": 16
+    },
+    {
+      "start": "2020-05-21 00:45:00",
+      "end": "2020-05-21 07:30:00",
+      "slots": 28
+    },
+    {
+      "start": "2020-05-23 05:30:00",
+      "end": "2020-05-23 06:30:00",
+      "slots": 5
+    },
+    {
+      "start": "2020-05-23 21:45:00",
+      "end": "2020-05-23 21:45:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-05-29 02:00:00",
+      "end": "2020-05-29 06:00:00",
+      "slots": 17
+    },
+    {
+      "start": "2020-06-03 14:00:00",
+      "end": "2020-06-03 14:00:00",
+      "slots": 1
+    }
+  ],
+  "generation_gap_runs": [
+    {
+      "start": "2020-05-15 23:15:00",
+      "end": "2020-05-16 01:45:00",
+      "slots": 11
+    },
+    {
+      "start": "2020-05-19 11:45:00",
+      "end": "2020-05-19 12:15:00",
+      "slots": 3
+    },
+    {
+      "start": "2020-05-20 13:30:00",
+      "end": "2020-05-20 17:15:00",
+      "slots": 16
+    },
+    {
+      "start": "2020-05-20 23:00:00",
+      "end": "2020-05-21 07:30:00",
+      "slots": 35
+    },
+    {
+      "start": "2020-05-23 05:15:00",
+      "end": "2020-05-23 06:30:00",
+      "slots": 6
+    },
+    {
+      "start": "2020-05-23 21:45:00",
+      "end": "2020-05-23 21:45:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-05-25 05:45:00",
+      "end": "2020-05-25 05:45:00",
+      "slots": 1
+    },
+    {
+      "start": "2020-05-28 22:30:00",
+      "end": "2020-05-29 06:00:00",
+      "slots": 31
+    },
+    {
+      "start": "2020-06-17 06:15:00",
+      "end": "2020-06-17 06:30:00",
+      "slots": 2
+    }
+  ],
+  "weather_slots_imputed_short_gap": 5,
+  "weather_slots_imputed_night": 50,
+  "weather_slots_left_missing": 27,
+  "night_slots_per_day": 45,
+  "clock_lag_best_slots": 0,
+  "clock_lag_correlations": {
+    "-4": 0.8747,
+    "-3": 0.9037,
+    "-2": 0.9273,
+    "-1": 0.9553,
+    "0": 0.9954,
+    "1": 0.9525,
+    "2": 0.9255,
+    "3": 0.9039,
+    "4": 0.8762
+  },
+  "expected_generation_rows": 71808,
+  "generation_rows_missing": 3030,
+  "generation_rows_filled_night_zero": 2165,
+  "generation_rows_comm_loss_daylight": 865,
+  "generation_rows_comm_loss_plant_wide": 704,
+  "ac_gt_dc_rows": 18,
+  "irradiation_gt_1_5": 0,
+  "daylight_rows_zero_dc": 63,
+  "night_rows_positive_dc": 170,
+  "total_yield_decreases": 0,
+  "total_yield_zero_values": 0,
+  "daily_yield_nonzero_at_midnight_frac": 0.21524064171122995,
+  "daily_yield_vs_ac_energy_ratio": 0.9893894654824548,
+  "k_plant_kW_per_kWm2": 1551.0,
+  "plant_diagnostics": {
+    "thermal_model": {
+      "a_degC_per_kWm2": 28.94,
+      "b_degC": -0.16
+    },
+    "thermal_anomaly_slots": 33,
+    "thermal_anomaly_last": "2020-06-06 14:30:00",
+    "irradiance_sensor_suspect_slots": 0
+  },
+  "label_distribution_daylight_slots": {
+    "NORMALE": 30653,
+    "SOTTOPRESTAZIONE": 9,
+    "INVERTER_FERMO": 60,
+    "PERDITA_COMUNICAZIONE": 865
+  }
+}

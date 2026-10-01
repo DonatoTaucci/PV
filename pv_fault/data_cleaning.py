@@ -1,16 +1,14 @@
-"""Caricamento e pulizia dei dati SCADA (generazione per inverter + stazione meteo).
+"""Caricamento e pulizia dei dati di generazione (per inverter) e meteo.
 
-Ogni passo della pulizia scrive i propri numeri in un dizionario ``report`` in
-modo che la tesi possa riportare *quanto* è stato corretto, non solo *come*.
+Problemi trovati nei due impianti:
+- formato data diverso tra i file (dd-mm-YYYY nell'impianto 1, ISO nel 2);
+- DC_POWER dell'impianto 1 dieci volte troppo grande (AC/DC = 0.098);
+- timestamp mancanti, a volte per tutto l'impianto, a volte per un solo inverter;
+- buchi diversi tra file meteo e file di generazione;
+- TOTAL_YIELD che torna indietro o va a zero (impianto 2), DAILY_YIELD che non
+  si azzera a mezzanotte.
 
-Problemi emersi dall'analisi esplorativa dei due impianti Kaggle:
-  1. formati data diversi tra file (dd-mm-YYYY HH:MM vs ISO);
-  2. DC_POWER dell'impianto 1 in scala x10 (AC/DC ~= 0.098, fisicamente impossibile);
-  3. timestamp mancanti (per impianto, per singolo inverter, solo meteo);
-  4. griglie temporali di generazione e meteo non identiche (slot presenti in un
-     file e non nell'altro);
-  5. contatori TOTAL_YIELD non monotoni / azzerati (impianto 2) e DAILY_YIELD che
-     non si azzera a mezzanotte ma al primo campione produttivo.
+clean() restituisce anche un dizionario con il conteggio di ogni correzione.
 """
 from __future__ import annotations
 
@@ -107,26 +105,26 @@ def clean(gen: pd.DataFrame, wea: pd.DataFrame, name: str = "plant") -> tuple[pd
     rep["raw_rows_weather"] = len(wea)
     rep["n_inverters"] = int(gen["SOURCE_KEY"].nunique())
 
-    # 1) Valori negativi / NaN espliciti ------------------------------------
+    # 1) Valori negativi / NaN espliciti
     num_g = ["DC_POWER", "AC_POWER"]
     rep["negative_power_values"] = int((gen[num_g] < 0).sum().sum())
     gen[num_g] = gen[num_g].where(gen[num_g] >= 0)
     rep["explicit_nan_generation"] = int(gen[num_g].isna().sum().sum())
     rep["explicit_nan_weather"] = int(wea[WEATHER_COLS[1:]].isna().sum().sum())
 
-    # 2) Allineamento alla griglia di 15 minuti ------------------------------
+    # 2) Allineamento alla griglia di 15 minuti
     for df, key in [(gen, "generation"), (wea, "weather")]:
         off = df["DATE_TIME"] != df["DATE_TIME"].dt.round(C.FREQ)
         rep[f"off_grid_timestamps_{key}"] = int(off.sum())
         df["DATE_TIME"] = df["DATE_TIME"].dt.round(C.FREQ)
 
-    # 3) Duplicati (dopo l'arrotondamento): media ------------------------------
+    # 3) Duplicati (dopo l'arrotondamento): media
     rep["duplicates_generation"] = int(gen.duplicated(["DATE_TIME", "SOURCE_KEY"]).sum())
     rep["duplicates_weather"] = int(wea.duplicated(["DATE_TIME"]).sum())
     gen = gen.groupby(["DATE_TIME", "SOURCE_KEY"], as_index=False).mean(numeric_only=True)
     wea = wea.groupby("DATE_TIME", as_index=False)[WEATHER_COLS[1:]].mean()
 
-    # 4) Scala di DC_POWER -----------------------------------------------------
+    # 4) Scala di DC_POWER
     prod = gen[(gen["DC_POWER"] > 0) & (gen["AC_POWER"] > 0)]
     eff = float((prod["AC_POWER"] / prod["DC_POWER"]).median()) if len(prod) else np.nan
     factor = 1.0
@@ -136,7 +134,7 @@ def clean(gen: pd.DataFrame, wea: pd.DataFrame, name: str = "plant") -> tuple[pd
     rep["median_ac_dc_ratio_raw"] = eff
     rep["dc_scale_factor_applied"] = factor
 
-    # 5) Griglia completa --------------------------------------------------------
+    # 5) Griglia completa
     t0 = min(gen["DATE_TIME"].min(), wea["DATE_TIME"].min()).normalize()
     t1 = max(gen["DATE_TIME"].max(), wea["DATE_TIME"].max()).normalize() + pd.Timedelta("23:45:00")
     grid = pd.date_range(t0, t1, freq=C.FREQ)
@@ -154,7 +152,7 @@ def clean(gen: pd.DataFrame, wea: pd.DataFrame, name: str = "plant") -> tuple[pd
     rep["generation_gap_runs"] = _gap_runs(grid.difference(gen_ts)).assign(
         start=lambda d: d.start.astype(str), end=lambda d: d.end.astype(str)).to_dict("records")
 
-    # 6) Meteo: imputazione controllata -------------------------------------------
+    # 6) Meteo: imputazione controllata
     night = _night_slots(wea)
     w = wea.set_index("DATE_TIME").reindex(grid)
     w.index.name = "DATE_TIME"
@@ -181,7 +179,7 @@ def clean(gen: pd.DataFrame, wea: pd.DataFrame, name: str = "plant") -> tuple[pd
     rep["weather_slots_left_missing"] = int(w["IRRADIATION"].isna().sum())
     rep["night_slots_per_day"] = len(night)
 
-    # 7) Verifica sincronizzazione orologi generazione/meteo -----------------------
+    # 7) Verifica sincronizzazione orologi generazione/meteo
     plant_dc = gen.groupby("DATE_TIME")["DC_POWER"].sum().reindex(grid)
     lag, corr = _best_lag(plant_dc, w["IRRADIATION"])
     rep["clock_lag_best_slots"] = int(lag)
@@ -189,7 +187,7 @@ def clean(gen: pd.DataFrame, wea: pd.DataFrame, name: str = "plant") -> tuple[pd
     if lag != 0:  # correggiamo solo se lo sfasamento è evidente
         w[WEATHER_COLS[1:]] = w[WEATHER_COLS[1:]].shift(lag)
 
-    # 8) Generazione su griglia completa --------------------------------------------
+    # 8) Generazione su griglia completa
     inverters = sorted(gen["SOURCE_KEY"].unique())
     full_idx = pd.MultiIndex.from_product([grid, inverters], names=["DATE_TIME", "SOURCE_KEY"])
     g = gen.set_index(["DATE_TIME", "SOURCE_KEY"]).reindex(full_idx).reset_index()
@@ -210,14 +208,14 @@ def clean(gen: pd.DataFrame, wea: pd.DataFrame, name: str = "plant") -> tuple[pd
     rep["generation_rows_comm_loss_daylight"] = int(g["COMM_LOSS"].sum())
     rep["generation_rows_comm_loss_plant_wide"] = int(g["COMM_LOSS_PLANT_WIDE"].sum())
 
-    # 9) Controlli di plausibilità fisica ---------------------------------------------
+    # 9) Controlli di plausibilità fisica
     rep["ac_gt_dc_rows"] = int(((g["AC_POWER"] > g["DC_POWER"] * 1.001) & (g["DC_POWER"] > 1)).sum())
     rep["irradiation_gt_1_5"] = int((g["IRRADIATION"] > 1.5).sum() / max(len(inverters), 1))
     day = g["IRRADIATION"] >= C.DAYLIGHT_IRR
     rep["daylight_rows_zero_dc"] = int((day & (g["DC_POWER"] == 0)).sum())
     rep["night_rows_positive_dc"] = int(((g["IRRADIATION"] < C.NIGHT_IRR) & (g["DC_POWER"] > 1)).sum())
 
-    # 10) Contatori energetici (solo diagnostica: NON usati come feature) ---------------
+    # 10) Contatori energetici (solo diagnostica: NON usati come feature)
     gs = g.sort_values(["SOURCE_KEY", "DATE_TIME"])
     ty = gs.groupby("SOURCE_KEY")["TOTAL_YIELD"].apply(lambda s: s.dropna().diff())
     rep["total_yield_decreases"] = int((ty < 0).sum())

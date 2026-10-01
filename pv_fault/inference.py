@@ -1,4 +1,4 @@
-"""Analisi di nuovi dati SCADA con i modelli addestrati (usata dal sito)."""
+"""Applica il modello salvato a nuovi dati SCADA (servirà per il caricamento di CSV dal sito)."""
 from __future__ import annotations
 
 import joblib

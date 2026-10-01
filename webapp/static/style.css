@@ -19,7 +19,7 @@ h1 { font-size: 1.5rem; margin: 0 0 4px; }
 h2 { font-size: 1.15rem; margin: 32px 0 8px; }
 p.lead, .muted { color: var(--ink-2); }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; margin: 16px 0; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
 label { display: block; font-weight: 600; margin: 10px 0 4px; }
 input[type=file], textarea { width: 100%; }
 textarea { min-height: 120px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; }
@@ -37,3 +37,17 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .bar > span { display: block; height: 8px; border-radius: 4px; background: var(--accent); }
 details summary { cursor: pointer; color: var(--accent); }
 code { font-size: 0.85em; }
+nav { display: flex; gap: 4px; flex-wrap: wrap; margin: 12px 0 8px; border-bottom: 1px solid var(--line); }
+nav a { padding: 8px 12px; color: var(--ink-2); text-decoration: none; border-bottom: 2px solid transparent; }
+nav a.on { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+h3 { font-size: 1rem; margin: 0 0 6px; }
+img { max-width: 100%; height: auto; display: block; margin: 12px 0; background: #fff; border-radius: 8px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.kpi .v { font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.kpi .l { font-size: 0.85rem; color: var(--ink-2); }
+.controls { display: flex; gap: 16px; flex-wrap: wrap; }
+.controls label { margin: 0; font-weight: 600; }
+.controls select { display: block; margin-top: 4px; padding: 6px; font: inherit; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; max-width: 100%; }
+table.card th { width: 160px; }
+.foot { margin-top: 40px; font-size: 0.85rem; }

@@ -3,12 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PV Fault Beta</title>
+  <title>PV Fault</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body><main>
-  <h1><a href="/" style="color:inherit;text-decoration:none">PV Fault — previsione guasti fotovoltaici</a></h1>
-  <p class="muted">Versione beta per tesi sperimentale · modelli addestrati sui dati Kaggle di 2 impianti indiani (maggio–giugno 2020)</p>
+  <h1>PV Fault: previsione di guasti negli impianti fotovoltaici</h1>
+  <nav>
+    <a href="/" class="{{ 'on' if request.path == '/' }}">Panoramica</a>
+    <a href="/risultati" class="{{ 'on' if request.path == '/risultati' }}">Risultati</a>
+    <a href="/esplora" class="{{ 'on' if request.path.startswith('/esplora') }}">Esplora le predizioni</a>
+  </nav>
   {% block content %}{% endblock %}
+  <p class="muted foot">Modello v{{ card.version }} · dati: Kaggle "Solar Power Generation Data", 2 impianti in India, 15/05–17/06/2020</p>
 </main></body>
 </html>

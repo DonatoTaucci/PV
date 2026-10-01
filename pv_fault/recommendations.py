@@ -1,11 +1,7 @@
-"""Base di conoscenza guasti -> cause probabili -> azioni consigliate.
+"""Cause probabili e controlli consigliati per ogni tipo di guasto.
 
-Due usi:
-  1. arricchire l'output del modello (classe prevista -> cosa fare);
-  2. analizzare una DESCRIZIONE testuale di cosa succede in un impianto.
-     Nella beta è un semplice sistema esperto a parole chiave, dichiaratamente
-     NON un modello ML. TODO tesi: valutare un classificatore di testo o un LLM,
-     che però richiederebbe un corpus di descrizioni etichettate.
+analyze_description() è una prima versione a parole chiave per l'analisi di
+descrizioni testuali; non è ancora collegata al sito.
 """
 from __future__ import annotations
 

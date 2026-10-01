@@ -1,4 +1,4 @@
-"""Funzioni che concatenano pulizia -> etichette -> feature (usate da script e sito)."""
+"""Passaggi comuni: etichette, normalizzazione, feature e split temporale."""
 from __future__ import annotations
 
 import pandas as pd
@@ -25,7 +25,16 @@ def build_features(labeled: pd.DataFrame, twin, horizon: int = C.HORIZON_SLOTS) 
     return df
 
 
-def temporal_split_time(df: pd.DataFrame, frac: float = C.TRAIN_FRACTION_TEMPORAL) -> pd.Timestamp:
-    """Istante di taglio: primi ``frac`` giorni per training, resto per test."""
+def day_split(df: pd.DataFrame) -> dict:
+    """Assegna ogni giorno a train / val / test (in ordine temporale)."""
     days = sorted(df["DATE_TIME"].dt.normalize().unique())
-    return pd.Timestamp(days[int(round(frac * len(days)))])
+    n_tr, n_va = C.SPLIT_DAYS["train"], C.SPLIT_DAYS["val"]
+    return {"train": (days[0], days[n_tr]),
+            "val": (days[n_tr], days[n_tr + n_va]),
+            "test": (days[n_tr + n_va], days[-1] + pd.Timedelta(days=1))}
+
+
+def in_period(df: pd.DataFrame, period: tuple, horizon: int = C.HORIZON_SLOTS) -> pd.Series:
+    """Campioni dentro il periodo il cui target (t+1..t+H) non sconfina nel periodo dopo."""
+    start, end = period
+    return (df["DATE_TIME"] >= start) & (df["DATE_TIME"] < end - pd.Timedelta(minutes=15 * horizon))

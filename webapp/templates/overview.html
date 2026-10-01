@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<p class="lead">Il modello stima, per ogni inverter che in questo momento funziona normalmente, la probabilità che
+entro le prossime {{ card.horizon_min }} minuti si fermi o vada in sottoprestazione rispetto agli inverter vicini.
+Gli inverter già in guasto vengono segnalati direttamente dalle regole di diagnosi.</p>
+
+{% set o = m.onset_electrical %}{% set e = m.events_at_validation_threshold %}{% set a = m.at_validation_threshold %}
+<h2>Prestazioni del modello finale (test sugli ultimi 7 giorni, mai visti in addestramento)</h2>
+<div class="kpis">
+  <div class="kpi"><div class="v">{{ o.AP }}</div><div class="l">AUC-PR insorgenza guasti<br><span class="muted">IC95 {{ m.CI95_AP_electrical.low }}–{{ m.CI95_AP_electrical.high }}</span></div></div>
+  <div class="kpi"><div class="v">×{{ o.lift_AP_over_prevalence }}</div><div class="l">rispetto a un classificatore casuale<br><span class="muted">prevalenza {{ o.prevalence }}</span></div></div>
+  <div class="kpi"><div class="v">{{ (e.event_recall*100)|round|int }} %</div><div class="l">guasti anticipati<br><span class="muted">{{ e.events_anticipated }} su {{ e.n_events }} eventi</span></div></div>
+  <div class="kpi"><div class="v">{{ e.median_lead_min|int }} min</div><div class="l">anticipo mediano</div></div>
+  <div class="kpi"><div class="v">{{ e.false_alarms_per_inverter_day }}</div><div class="l">falsi allarmi per inverter al giorno</div></div>
+</div>
+<p class="muted">Soglia d'allarme {{ card.threshold|round(3) }}, scelta sulla validazione. Alla stessa soglia, sul singolo istante:
+precision {{ a.precision }}, recall {{ a.recall }}. Un modello euristico senza apprendimento (1 − r_peer dell'ultima ora) ottiene AUC-PR {{ m.heuristic_AP }}.</p>
+
+<h2>Come è costruito</h2>
+<div class="grid">
+  <div class="card"><h3>1. Pulizia</h3><p>Griglia completa a 15 minuti per inverter. Correzione della scala DC dell'impianto 1 (fattore {{ reports[1].dc_scale_factor_applied }}).
+  Imputazione solo dove è fisicamente giustificata (notte, buchi brevi). Verifica della sincronizzazione meteo/produzione.</p></div>
+  <div class="card"><h3>2. Etichette</h3><p>Il dataset non contiene etichette di guasto. Ogni inverter viene confrontato con la mediana degli altri nello stesso istante (r_peer):
+  fermo se r_peer &lt; {{ M.protocol.label_thresholds.trip }}, sottoprestazione se &lt; {{ M.protocol.label_thresholds.under }} per almeno 45 min.</p></div>
+  <div class="card"><h3>3. Gemello digitale</h3><p>Potenza attesa da irraggiamento, temperatura dei moduli e ora del giorno. Modello scelto: <code>{{ card.twin }}</code>.
+  Lo scarto tra potenza misurata e attesa è una delle feature.</p></div>
+  <div class="card"><h3>4. Classificatore</h3><p>{{ card.features|length }} feature adimensionali (storia di r_peer, scarti dal gemello, meteo, ora).
+  Scelto tra {{ M.selection['P1+2'].classifier_validation|length - 1 }} candidati (regressione logistica, random forest, LightGBM): <code>{{ card.classifier }}</code>.</p></div>
+</div>
+
+<h2>Protocollo</h2>
+<table class="card">
+  <tr><th>Train</th><td>{{ M.protocol.splits['1'].train[0] }} → {{ M.protocol.splits['1'].train[1] }} (20 giorni)</td></tr>
+  <tr><th>Validazione</th><td>{{ M.protocol.splits['1'].val[0] }} → {{ M.protocol.splits['1'].val[1] }} (7 giorni): scelta di modello, iperparametri e soglia</td></tr>
+  <tr><th>Test</th><td>{{ M.protocol.splits['1'].test[0] }} → {{ M.protocol.splits['1'].test[1] }} (7 giorni): usato una sola volta</td></tr>
+  <tr><th>Cross-impianto</th><td>addestramento su un impianto e test su tutti i 34 giorni dell'altro</td></tr>
+</table>
+{% endblock %}

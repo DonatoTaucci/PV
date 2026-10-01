@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<form class="card controls" method="get" action="/esplora">
+  <label>Scenario<select name="scenario" onchange="this.form.inverter.value='';this.form.giorno.value='';this.form.submit()">
+    {% for k, (t, _) in scenarios.items() %}<option value="{{ k }}" {{ 'selected' if k == key }}>{{ t }}</option>{% endfor %}</select></label>
+  <label>Inverter<select name="inverter" onchange="this.form.giorno.value='';this.form.submit()">
+    {% for i in inverters %}<option {{ 'selected' if i == inv }}>{{ i }}</option>{% endfor %}</select></label>
+  <label>Giorno<select name="giorno" onchange="this.form.submit()">
+    {% for d in days %}<option {{ 'selected' if d == day }}>{{ d }}</option>{% endfor %}</select></label>
+</form>
+<img src="/esplora/grafico.png?scenario={{ key }}&inverter={{ inv }}&giorno={{ day }}" alt="Predizioni del giorno">
+<p class="muted">In alto: r_peer e stato reale (quadrati). In basso: rischio previsto quando l'inverter è in stato normale; i punti sono gli allarmi (soglia {{ thr|round(3) }}).</p>
+
+<h2>Allarmi del giorno</h2>
+{% if not alarms %}<p>Nessun allarme.</p>{% else %}
+<div class="card table-wrap"><table>
+<thead><tr><th>Ora</th><th class="num">Rischio</th><th>Guasto previsto</th><th>Cosa è successo nelle 2 h successive</th></tr></thead>
+<tbody>{% for a in alarms %}<tr><td>{{ a.time }}</td><td class="num">{{ (a.risk*100)|round(1) }} %</td>
+<td><span class="badge s-{{ a.cls }}">{{ a.cls }}</span></td><td><span class="badge s-{{ a.happened }}">{{ a.happened }}</span></td></tr>{% endfor %}</tbody>
+</table></div>
+{% for c, r in rec.items() %}
+<div class="card"><h3>{{ r.title }}: cosa controllare</h3>
+<p><strong>Cause più comuni:</strong> {{ r.causes|join('; ') }}.</p>
+<ul>{% for x in r.actions %}<li>{{ x }}</li>{% endfor %}</ul></div>
+{% endfor %}{% endif %}
+{% endblock %}

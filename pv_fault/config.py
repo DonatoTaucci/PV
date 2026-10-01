@@ -1,7 +1,6 @@
-"""Parametri globali della pipeline (bozza v0.1).
+"""Percorsi, soglie e parametri usati in tutto il progetto.
 
-Tutte le soglie sono raccolte qui per poterle discutere/giustificare nella tesi
-e fare analisi di sensibilità senza toccare il resto del codice.
+Le soglie stanno tutte qui così le analisi di sensibilità si fanno cambiando un solo file.
 """
 from pathlib import Path
 
@@ -59,5 +58,9 @@ SEVERITY = [2, 3, 1, 0]
 # --- Previsione --------------------------------------------------------------
 HORIZON_SLOTS = 8          # prevediamo lo stato più grave nelle prossime 2 ore
 HISTORY_SLOTS_DAY = 96     # finestra storica di 24 h per le feature
-TRAIN_FRACTION_TEMPORAL = 0.70
+# Split per giorni dentro ciascun impianto: 20 giorni train, 7 validazione, 7 test
+SPLIT_DAYS = {"train": 20, "val": 7, "test": 7}
+# Budget di allarmi alternativo alla soglia: quota di istanti inverter segnalati
+ALARM_BUDGET = 0.02
+N_BOOTSTRAP = 500
 RANDOM_STATE = 42

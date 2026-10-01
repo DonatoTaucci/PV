@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "trained_on": "Plant 1 + Plant 2, 15/05-17/06/2020",
+  "twin": "fisico",
+  "classifier": "random_forest_leaf50",
+  "threshold": 0.2382,
+  "horizon_min": 120,
+  "features": [
+    "R_PEER",
+    "R_PEER_MEAN_1H",
+    "R_PEER_MIN_1H",
+    "R_PEER_STD_1H",
+    "R_PEER_MEAN_2H",
+    "R_PEER_MEAN_24H",
+    "R_PEER_TREND_1H",
+    "N_UNDER_24H",
+    "N_TRIP_24H",
+    "N_COMM_24H",
+    "SLOTS_SINCE_FAULT",
+    "STATE",
+    "TWIN_RESID",
+    "TWIN_RESID_MEAN_1H",
+    "TWIN_RESID_MEAN_24H",
+    "IRRADIATION",
+    "IRR_DIFF_1H",
+    "DELTA_T",
+    "HOUR_SIN",
+    "HOUR_COS",
+    "PLANT_FRAC_FAULT"
+  ],
+  "twin_features": [
+    "IRRADIATION",
+    "MODULE_TEMPERATURE",
+    "HOUR_SIN",
+    "HOUR_COS"
+  ],
+  "classes": {
+    "0": "NORMALE",
+    "1": "SOTTOPRESTAZIONE",
+    "2": "INVERTER_FERMO",
+    "3": "PERDITA_COMUNICAZIONE"
+  },
+  "selection": "AP sulla validazione combinata P1+P2 (giorni 21-27)",
+  "expected_performance": "vedi in_plant_test['P1+2'] in results/metrics.json"
+}

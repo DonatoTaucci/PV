@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: pv-fault-beta
+    name: pv-fault-beta  # nome del servizio su Render
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt

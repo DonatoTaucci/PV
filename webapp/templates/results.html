@@ -1,51 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
-<p><a href="/">← nuova analisi</a> · sorgente: {{ source }}</p>
-<div class="card">
-  <strong>Istante di riferimento:</strong> {{ r.reference_time }} (ultimo istante diurno) ·
-  <strong>orizzonte:</strong> {{ r.horizon_minutes }} min · <strong>k impianto:</strong> {{ r.k_plant }} kW per kW/m²
-  {% if r.k_note %}<br><span class="muted">{{ r.k_note }}</span>{% endif %}
-</div>
-
-{% if r.plant_alerts %}
-<h2>Avvisi a livello d'impianto</h2>
-{% for a in r.plant_alerts %}
-<div class="card"><strong>{{ a.title }}</strong> ({{ a.slots }} slot anomali)
-  <ul>{% for x in a.actions %}<li>{{ x }}</li>{% endfor %}</ul></div>
-{% endfor %}
-{% endif %}
-
-<h2>Inverter ordinati per rischio</h2>
-<div class="card table-wrap">
-<table>
-  <thead><tr><th>Inverter</th><th>Stato attuale</th><th class="num">r_peer</th><th>Previsione</th><th>Rischio guasto</th><th>Storico (slot diurni anomali)</th></tr></thead>
-  <tbody>
-  {% for i in r.inverters %}
-  <tr>
-    <td><code>{{ i.inverter }}</code></td>
-    <td><span class="badge s-{{ i.state_now }}">{{ i.state_now }}</span></td>
-    <td class="num">{{ i.r_peer if i.r_peer is not none else '–' }}</td>
-    <td><span class="badge s-{{ i.prediction }}">{{ i.prediction }}</span></td>
-    <td><div class="bar" title="{{ (i.risk_fault*100)|round(1) }} %"><span style="width: {{ (i.risk_fault*100)|round(1) }}%"></span></div>
-        <span class="muted">{{ (i.risk_fault*100)|round(1) }} %</span></td>
-    <td class="muted">sotto {{ i.history_slots.SOTTOPRESTAZIONE }} · fermo {{ i.history_slots.INVERTER_FERMO }} · comm {{ i.history_slots.PERDITA_COMUNICAZIONE }}</td>
-  </tr>
-  {% if i.recommendation %}
-  <tr><td></td><td colspan="5">
-    <details><summary>{{ i.recommendation.title }}: cause e azioni consigliate</summary>
-      <p><strong>Cause probabili:</strong> {{ i.recommendation.causes|join('; ') }}</p>
-      <ul>{% for x in i.recommendation.actions %}<li>{{ x }}</li>{% endfor %}</ul>
-    </details></td></tr>
-  {% endif %}
-  {% endfor %}
-  </tbody>
-</table>
-</div>
-
-<h2>Pulizia dei dati caricati</h2>
+<h2>Insorgenza di guasti elettrici</h2>
+<p class="muted">Metrica principale: area sotto la curva precision-recall (AP). Un classificatore casuale ha AP pari alla prevalenza.
+Gli intervalli di confidenza al 95 % sono ottenuti ricampionando i giorni (bootstrap, {{ M.protocol.n_bootstrap }} ripetizioni).</p>
 <div class="card table-wrap"><table>
-  {% for k, v in r.cleaning.items() %}<tr><td>{{ k }}</td><td class="num">{{ v }}</td></tr>{% endfor %}
+<thead><tr><th>Scenario</th><th class="num">Slot positivi</th><th class="num">Prevalenza</th><th class="num">AP</th><th>IC95</th><th class="num">Lift</th><th class="num">AP euristica</th><th class="num">Precision</th><th class="num">Recall</th></tr></thead>
+<tbody>{% for name, r in rows %}{% set o = r.onset_electrical %}<tr>
+<td>{{ name }}</td><td class="num">{{ o.n_positive }}</td><td class="num">{{ o.prevalence }}</td><td class="num"><strong>{{ o.AP }}</strong></td>
+<td>{{ r.CI95_AP_electrical.low }}–{{ r.CI95_AP_electrical.high }}</td><td class="num">{{ o.lift_AP_over_prevalence }}</td><td class="num">{{ r.heuristic_AP }}</td>
+<td class="num">{{ r.at_validation_threshold.precision }}</td><td class="num">{{ r.at_validation_threshold.recall }}</td></tr>{% endfor %}</tbody>
 </table></div>
-<p class="muted">Modello {{ r.model_version }}. Le probabilità provengono da un modello addestrato su due soli impianti:
-vanno interpretate come indicazione di priorità, non come certezza.</p>
+<img src="/figure/fig4_curve_precision_recall.png" alt="Curve precision-recall">
+
+<h2>Eventi di guasto anticipati</h2>
+<p class="muted">Un evento è l'inizio di un fermo o di una sottoprestazione preceduto da funzionamento normale. È anticipato se il modello ha dato un allarme nelle 2 ore precedenti.</p>
+<div class="card table-wrap"><table>
+<thead><tr><th>Scenario</th><th class="num">Eventi</th><th class="num">Anticipati</th><th class="num">Recall</th><th class="num">Anticipo mediano</th><th class="num">Falsi allarmi / inverter·giorno</th></tr></thead>
+<tbody>{% for name, r in rows %}{% set e = r.events_at_validation_threshold %}<tr>
+<td>{{ name }}</td><td class="num">{{ e.n_events }}</td><td class="num">{{ e.events_anticipated }}</td><td class="num">{{ e.event_recall }}</td>
+<td class="num">{{ e.median_lead_min }} min</td><td class="num">{{ e.false_alarms_per_inverter_day }}</td></tr>{% endfor %}</tbody>
+</table></div>
+<img src="/figure/fig9_esempio_timeline.png" alt="Esempio di timeline">
+
+<h2>Stato a 2 ore: confronto con la persistenza</h2>
+<p class="muted">Persistenza = "tra 2 ore l'inverter sarà nello stato in cui è adesso". Δ negativo = il sistema fa peggio della persistenza.</p>
+<div class="card table-wrap"><table>
+<thead><tr><th>Scenario</th><th class="num">Sistema macro-F1</th><th class="num">Persistenza macro-F1</th><th>Δ [IC95]</th><th class="num">Sistema MCC</th><th class="num">Persistenza MCC</th></tr></thead>
+<tbody>{% for name, r in rows %}<tr><td>{{ name }}</td><td class="num">{{ r.hybrid.macro_F1 }}</td><td class="num">{{ r.persistence.macro_F1 }}</td>
+<td>{{ (r.hybrid.macro_F1 - r.persistence.macro_F1)|round(3) }} [{{ r.CI95_macroF1_hybrid_minus_persistence.low }}, {{ r.CI95_macroF1_hybrid_minus_persistence.high }}]</td>
+<td class="num">{{ r.hybrid.MCC }}</td><td class="num">{{ r.persistence.MCC }}</td></tr>{% endfor %}</tbody>
+</table></div>
+<img src="/figure/fig6_matrici_confusione_cross.png" alt="Matrici di confusione">
+
+<h2>Gemello digitale</h2>
+<div class="card table-wrap"><table>
+<thead><tr><th>Scenario</th><th>Modello</th><th class="num">nRMSE %</th><th class="num">R²</th></tr></thead>
+<tbody>{% for sc, d in M.twin_test.items() %}{% for k, v in d.items() %}<tr><td>{{ sc.replace('_to_', ' → ') }}</td><td>{{ k }}</td><td class="num">{{ v['nRMSE_%'] }}</td><td class="num">{{ v.R2 }}</td></tr>{% endfor %}{% endfor %}</tbody>
+</table></div>
+
+<h2>Selezione dei modelli (validazione)</h2>
+<img src="/figure/fig7_selezione_modelli.png" alt="Selezione dei modelli">
+<h2>Calibrazione e sensibilità</h2>
+<div class="grid"><img src="/figure/fig5_calibrazione.png" alt="Calibrazione"><img src="/figure/fig8_sensibilita.png" alt="Sensibilità"></div>
+<h2>Dati</h2>
+<div class="grid"><img src="/figure/fig1_completezza_dati.png" alt="Completezza"><img src="/figure/fig3_distribuzione_r_peer.png" alt="r_peer"></div>
 {% endblock %}

@@ -1,16 +1,13 @@
-"""Etichettatura dei guasti (weak supervision).
+"""Etichette di guasto ricavate dai dati.
 
-Il dataset Kaggle NON contiene etichette di guasto. Le etichette vengono quindi
-derivate con regole fisiche trasparenti, basate sul confronto di ogni inverter
-con gli altri inverter dello stesso impianto nello stesso istante ("peer
-comparison"). Questo approccio:
-  * non dipende dal sensore di irraggiamento (che è unico per impianto);
-  * non dipende dal modello ML che poi verrà valutato (niente circolarità);
-  * è invariante rispetto alla taglia dell'impianto -> trasferibile.
+Il dataset non ha etichette, quindi ogni inverter viene confrontato con la
+mediana degli altri inverter dello stesso impianto nello stesso istante
+(r_peer). Il confronto non usa il sensore di irraggiamento e non dipende dalla
+taglia dell'impianto.
 
-Limite dichiarato: se TUTTI gli inverter degradano insieme (es. sporcamento
-uniforme) il confronto tra pari non lo vede; per questo c'è il gemello
-digitale (twin) e le diagnosi a livello di impianto più sotto.
+Limite: un calo che colpisce tutti gli inverter insieme (es. sporcamento
+uniforme) non si vede; per quello servono il gemello digitale e le diagnosi a
+livello di impianto in fondo al file.
 """
 from __future__ import annotations
 
